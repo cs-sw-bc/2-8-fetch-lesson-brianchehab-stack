@@ -13,28 +13,29 @@ const weatherData = {
 };
 
 // ----- Function to update DOM -----
-function displayWeather(data) {
-  document.getElementById("cityName").textContent = "Your city";
-  document.getElementById("temperature").textContent = `8°C`;
-  document.getElementById("feelslike").textContent = `6°C`;
-  document.getElementById("humidity").textContent = `90%`;
-  document.getElementById("weatherDesc").textContent = `Moderate rain`;
-  document.getElementById("weatherIcon").src = "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0010_heavy_rain_showers.png";
-}
+function displayWeather(data) { 
+  console.log(data); 
+  document.getElementById("cityName").textContent = data.location.name; 
+  document.getElementById("temperature").textContent =data.current.temperature; 
+  document.getElementById("feelslike").textContent = data.current.feelslike; 
+  document.getElementById("humidity").textContent = `${data.current.humidity}%`; 
+  document.getElementById("weatherDesc").textContent =data.current.weather_descriptions[0] ; 
+  document.getElementById("weatherIcon").src = data.current.weather_icons[0]; 
+} 
+
+ 
 
 
 // ----- Modern way: Fetch API -----
-async function getWeather() {
-  const city = document.getElementById("cityInput").value || "Mississauga";
-  const errorMsg = document.getElementById("errorMsg");
-  try {
-    displayData={};
-    displayWeather(displayData);
-  } catch (error) {
-    console.error(error);
-    errorMsg.classList.remove("hidden");
-  }
-}
+async function getWeather() { 
+  const city = document.getElementById("cityInput").value || "Montreal"; 
+  const errorMsg = document.getElementById("errorMsg"); 
+  try { 
+    fetch(`https://api.weatherstack.com/current?access_key=cd77d026cc94fec79cc31eb45a500606&query=${city}`) 
+.then (response => response.json()) 
+.then (displayData => displayWeather(displayData)) 
+.catch(error=>console.log(error)); 
+
 
 // ----- (Old way) XMLHttpRequest Example -----
 function getWeatherXMLHTTP(city) {
